@@ -49,13 +49,15 @@ def main(ticker, classe):
             
             graph_df = pd.DataFrame({'date': base_df.index, 'Modelo TFT': ((base_df[f'{ticker} Using TFT'].add(1).cumprod()).sub(1)).mul(100), "Long Only": ((base_df[f'{ticker} Long Only'].add(1).cumprod()).sub(1)).mul(100)}).set_index('date').dropna()
             graph_df.index = pd.to_datetime(graph_df.index)
-            macd = pd.read_csv("Results/macd.csv")[ticker]
+            macd = pd.read_csv("Results/macd.csv").set_index("Date").fillna(0)
             macd.index.rename("date", inplace=True)
             macd.index = pd.to_datetime(macd.index)
-            graph_df = graph_df.join(macd)
-            print(graph_df)
+            macd = macd[list(graph_df.index)[0]:list(graph_df.index)[-1]]
+            # macd.loc[macd[ticker] > 1, ticker] = 0
+            graph_df["MACD"] = ((macd[ticker]).add(1).cumprod()).mul(100)
+            print(macd[ticker].add(1).cumprod())
+            # print(base_df[f'{ticker} Using TFT'].max())
 
-            
             if classe == "Equity":
                 moskowitz = pd.read_csv("Results/moskowitz.csv")
 

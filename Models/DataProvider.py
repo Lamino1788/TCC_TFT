@@ -35,7 +35,7 @@ class DataProvider:
 
 
 def projectData():
-    dp = DataProvider(dt.datetime(1990, 1, 1), dt.datetime(2023, 10, 1))
+    dp = DataProvider(dt.datetime(1990, 1, 1), dt.datetime(2023, 10, 28))
 
     df = dp.getTickersHistory([
         #Equities
