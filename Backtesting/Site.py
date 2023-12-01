@@ -40,14 +40,24 @@ def config():
         options = AVAILABLE_TICKERS[classe]
         )
 
-    return ticker
+    return ticker, classe
 
-def main(ticker):
+def main(ticker, classe):
             base_df = pd.read_csv(f'Results/{ticker}.csv').set_index('date')
             base_df[f'{ticker} Long Only'] = base_df[f'{ticker} Long Only'].astype(float)
             base_df[f'{ticker} Using TFT'] = base_df[f'{ticker} Using TFT'].astype(float)
+            
             graph_df = pd.DataFrame({'date': base_df.index, 'Modelo TFT': ((base_df[f'{ticker} Using TFT'].add(1).cumprod()).sub(1)).mul(100), "Long Only": ((base_df[f'{ticker} Long Only'].add(1).cumprod()).sub(1)).mul(100)}).set_index('date').dropna()
             graph_df.index = pd.to_datetime(graph_df.index)
+            macd = pd.read_csv("Results/macd.csv")[ticker]
+            macd.index.rename("date", inplace=True)
+            macd.index = pd.to_datetime(macd.index)
+            graph_df = graph_df.join(macd)
+            print(graph_df)
+
+            
+            if classe == "Equity":
+                moskowitz = pd.read_csv("Results/moskowitz.csv")
 
             fig = px.line(graph_df, x=graph_df.index, y=graph_df.columns, labels={'value': 'Retorno Acumulado (%)', 'variable': 'Série', 'date': 'Data'}, )
 
@@ -78,10 +88,10 @@ if __name__ == "__main__":
         initial_sidebar_state="expanded",
         layout="wide",
     )
-    ticker  = config()
+    ticker, classe  = config()
     
     st.header(ticker)
-    fig, fig2, metrics, base_df = main(ticker)
+    fig, fig2, metrics, base_df = main(ticker, classe)
     st.plotly_chart(fig, use_container_width=True)
     st.subheader('Metrics')
     display_metrics(fig2, metrics, ticker)
