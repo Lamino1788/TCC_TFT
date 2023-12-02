@@ -1,3 +1,4 @@
+import numpy as np
 import yfinance as yf
 import pandas as pd
 import datetime as dt
@@ -33,6 +34,16 @@ class DataProvider:
         df = df.reset_index(drop = False).rename_axis("Date")
         return df
 
+def cleanData(df: pd.DataFrame) -> pd.DataFrame:
+
+    tickers = df.columns.tolist()
+    for t in tickers:
+        first_index = df[t].first_valid_index()
+        df.loc[first_index:, t] = df.loc[first_index:, t].fillna(method="bfill")
+        mask = abs(df[t]/df[t].shift(1) -1 ) > 0.5
+        df[mask] = np.NAN
+        df.loc[first_index:, t] = df.loc[first_index:, t].fillna(method="bfill")
+    return df
 
 def projectData():
     dp = DataProvider(dt.datetime(1990, 1, 1), dt.datetime(2023, 10, 1))
@@ -67,6 +78,7 @@ def projectData():
 
     df.set_index("Date", inplace=True)
 
+    df = cleanData(df)
     return df
 
 if __name__ == "__main__":
