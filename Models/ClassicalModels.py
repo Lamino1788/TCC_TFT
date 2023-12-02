@@ -4,6 +4,7 @@ from functools import cache
 from typing import List
 from DataProvider import projectData
 
+
 class Moskowitz:
 
     def __init__(self, prices: pd.DataFrame, vol_target: float = 0.15, vol_lookback: int = 60):
@@ -61,14 +62,19 @@ class MACD:
 
     def _signal(self, srs: pd.Series, short_timescale : int, long_timescale: int) -> pd.Series:
 
-        m_s = srs.ewm(halflife= MACD.halflife(short_timescale)).mean()
-        m_l = srs.ewm(halflife= MACD.halflife(long_timescale)).mean()
+        prices = srs[srs.index >= srs.first_valid_index()].fillna(method="bfill")
+        m_s = prices.ewm(halflife= MACD.halflife(short_timescale)).mean()
+        m_l = prices.ewm(halflife= MACD.halflife(long_timescale)).mean()
 
         macd = m_s - m_l
 
-        q = macd / srs.rolling(63).std().fillna(method="bfill")
+        q: pd.Series = macd / prices.rolling(63).std()
 
-        return q / q.rolling(252).std().fillna(method="bfill")
+        q.replace(-np.inf, 0, inplace= True)
+
+        return q / q.rolling(252).std()
+
+
 
     def _position_size(self, signal : pd.Series) -> pd.Series:
 
@@ -76,16 +82,17 @@ class MACD:
 
     def _average_signal(self, srs: pd.Series) -> pd.Series:
         signals = [self._signal(srs, c.S, c.L) for c in self.combinations]
-        return np.sum(signals, axis=0) / len(self.combinations)
+        return pd.concat(signals, axis=1).mean(axis=1)
 
     def strategy_return(self) -> pd.DataFrame:
         daily_returns = self._rolling_returns()
         tickers = self.prices.columns.tolist()
         returns = daily_returns.copy()
         for ticker in tickers:
-            signals = self._average_signal(daily_returns[ticker])
+            signals = self._average_signal(self.prices[ticker])
             positions = self._position_size(signals)
-            returns[ticker] = positions * daily_returns[ticker].shift(1)
+            positions.fillna(0, inplace=True)
+            returns[ticker] = positions * daily_returns[ticker]
         return returns
 
 
@@ -107,7 +114,6 @@ if __name__ == "__main__":
 
     mk_returns = moskowitz_returns()
     macd_returns = macd_returns()
-
     mk_returns.to_csv("moskowitz.csv", index_label="Date")
     macd_returns.to_csv("macd.csv", index_label="Date")
 
