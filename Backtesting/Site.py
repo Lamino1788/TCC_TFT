@@ -43,23 +43,24 @@ def config():
     return ticker, classe
 
 def main(ticker, classe):
-            base_df = pd.read_csv(f'Results/{ticker}.csv').set_index('date')
+            base_df = pd.read_csv(f'Backtesting/Results/{ticker}.csv').set_index('date')
             base_df[f'{ticker} Long Only'] = base_df[f'{ticker} Long Only'].astype(float)
             base_df[f'{ticker} Using TFT'] = base_df[f'{ticker} Using TFT'].astype(float)
             
             graph_df = pd.DataFrame({'date': base_df.index, 'Modelo TFT': ((base_df[f'{ticker} Using TFT'].add(1).cumprod()).sub(1)).mul(100), "Long Only": ((base_df[f'{ticker} Long Only'].add(1).cumprod()).sub(1)).mul(100)}).set_index('date').dropna()
             graph_df.index = pd.to_datetime(graph_df.index)
-            macd = pd.read_csv("Results/macd.csv").set_index("Date").fillna(0)
+
+            macd = pd.read_csv("Backtesting/Results/macd.csv").set_index("Date").fillna(0)
             macd.index.rename("date", inplace=True)
             macd.index = pd.to_datetime(macd.index)
             macd = macd[list(graph_df.index)[0]:list(graph_df.index)[-1]]
 
-            moskowitz = pd.read_csv("Results/moskowitz.csv").set_index("Date").fillna(0)
+            moskowitz = pd.read_csv("Backtesting/Results/moskowitz.csv").set_index("Date").fillna(0)
             moskowitz.index.rename("date", inplace=True)
             moskowitz.index = pd.to_datetime(moskowitz.index)
             moskowitz = moskowitz[list(graph_df.index)[0]:list(graph_df.index)[-1]]
 
-            bayes = pd.read_csv("Results/bayes_results.csv").set_index("Date").fillna(0)
+            bayes = pd.read_csv("Backtesting/Results/bayes_results.csv").set_index("Date").fillna(0)
             bayes.index.rename("date", inplace=True)
             bayes.index = pd.to_datetime(bayes.index)
             bayes = bayes[list(graph_df.index)[0]:list(graph_df.index)[-1]]
