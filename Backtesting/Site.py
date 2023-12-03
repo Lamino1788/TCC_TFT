@@ -53,13 +53,22 @@ def main(ticker, classe):
             macd.index.rename("date", inplace=True)
             macd.index = pd.to_datetime(macd.index)
             macd = macd[list(graph_df.index)[0]:list(graph_df.index)[-1]]
-            # macd.loc[macd[ticker] > 1, ticker] = 0
-            graph_df["MACD"] = ((macd[ticker]).add(1).cumprod()).mul(100)
-            print(macd[ticker].add(1).cumprod())
-            # print(base_df[f'{ticker} Using TFT'].max())
 
-            if classe == "Equity":
-                moskowitz = pd.read_csv("Results/moskowitz.csv")
+            moskowitz = pd.read_csv("Results/moskowitz.csv").set_index("Date").fillna(0)
+            moskowitz.index.rename("date", inplace=True)
+            moskowitz.index = pd.to_datetime(moskowitz.index)
+            moskowitz = moskowitz[list(graph_df.index)[0]:list(graph_df.index)[-1]]
+
+            bayes = pd.read_csv("Results/bayes_results.csv").set_index("Date").fillna(0)
+            bayes.index.rename("date", inplace=True)
+            bayes.index = pd.to_datetime(bayes.index)
+            bayes = bayes[list(graph_df.index)[0]:list(graph_df.index)[-1]]
+
+            graph_df["Moskowitz"] = ((moskowitz[ticker]).add(1).cumprod().sub(1)).mul(100)
+            graph_df["Bayes"] = ((bayes[ticker]).add(1).cumprod().sub(1)).mul(100)
+            graph_df["MACD"] = ((macd[ticker]).add(1).cumprod().sub(1)).mul(100)
+
+
 
             fig = px.line(graph_df, x=graph_df.index, y=graph_df.columns, labels={'value': 'Retorno Acumulado (%)', 'variable': 'Série', 'date': 'Data'}, )
 

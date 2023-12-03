@@ -34,7 +34,7 @@ warnings.filterwarnings("ignore")
 _DATA = "50y"
 _WINDOW_SIZE = 252 * 1
 _WINDOW_SIZE_TRADE = 15
-_MAX_DATE = dt.date(2023,6,1)
+_MAX_DATE = dt.date(2023,10,27)
 _MIN_DATE = dt.date(2000,1,1)
 now = dt.datetime.now() # current date and time
 _DATE_TIME = now.strftime("%Y%m%d_%Hh")
