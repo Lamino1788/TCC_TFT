@@ -65,7 +65,8 @@ def main(ticker, classe):
             bayes = bayes[list(graph_df.index)[0]:list(graph_df.index)[-1]]
 
             graph_df["Moskowitz"] = ((moskowitz[ticker]).add(1).cumprod().sub(1)).mul(100)
-            graph_df["Bayes"] = ((bayes[ticker]).add(1).cumprod().sub(1)).mul(100)
+            # graph_df["Bayes"] = bayes[ticker]
+            # graph_df["Bayes"] = graph_df["Bayes"].fillna(0).add(1).cumprod().sub(1).mul(100)
             graph_df["MACD"] = ((macd[ticker]).add(1).cumprod().sub(1)).mul(100)
 
 
