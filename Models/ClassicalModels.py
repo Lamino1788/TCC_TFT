@@ -3,16 +3,19 @@ import numpy as np
 from functools import cache
 from typing import List
 from DataProvider import projectData
-
+from MODEL_DATA import ASSET_SECTOR
 
 class Moskowitz:
 
-    def __init__(self, prices: pd.DataFrame, vol_target: float = 0.15, vol_lookback: int = 60):
+    def __init__(self, prices: pd.DataFrame, vol_target: float = 0.15, vol_lookback: int = 60,
+                 fi_vol_target: int = 0.05, fi_tickers : List[str] = []):
         self.vol_target = vol_target
         self.vol_lookback = vol_lookback
         self.prices = prices
         self.daily_returns = self._rolling_returns(1)
         self.daily_vol = self._realized_vol()
+        self.fi_vol_target = fi_vol_target
+        self.fi_tickers = fi_tickers
 
     def _rolling_returns(self, days: int = 1) -> pd.DataFrame:
         return self.prices / self.prices.shift(days) - 1
@@ -28,7 +31,13 @@ class Moskowitz:
         daily_returns = self.daily_returns.copy()
         annual_vol = self.daily_vol.copy() * np.sqrt(252)
 
-        return daily_returns * self.vol_target / annual_vol.shift(1)
+        scaled_returns = daily_returns / annual_vol.shift(1)
+
+        scaled_returns[self.fi_tickers] *= self.fi_vol_target
+        not_fi_tickers = set(scaled_returns.columns) - set(self.fi_tickers)
+        scaled_returns[list(not_fi_tickers)] *= self.vol_target
+
+        return scaled_returns
 
     def strategy_return(self) -> pd.DataFrame:
          """
@@ -99,7 +108,7 @@ class MACD:
 def moskowitz_returns():
 
     df = projectData()
-    mk = Moskowitz(df)
+    mk = Moskowitz(df, fi_tickers= ASSET_SECTOR["Fixed Income"])
     return mk.strategy_return()
 
 def macd_returns():
@@ -111,9 +120,19 @@ def macd_returns():
 
 
 if __name__ == "__main__":
+    import matplotlib
+    import datetime
 
+    # matplotlib.use("TkAgg")
     mk_returns = moskowitz_returns()
     macd_returns = macd_returns()
+
+    # c = np.sign(mk._rolling_returns(252)).value_counts("ZT=F")
+    # print(c)
+    # mk_returns.loc[mk_returns.index > datetime.date(2017,1,1), "ZT=F"].add(1).cumprod().plot()
+    # matplotlib.pyplot.show()
+
+    # print(mk_returns.head())
     mk_returns.to_csv("moskowitz.csv", index_label="Date")
     macd_returns.to_csv("macd.csv", index_label="Date")
 

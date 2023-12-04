@@ -4,6 +4,13 @@ import pandas as pd
 import datetime as dt
 import threading
 from typing import List
+import seaborn as sns
+import matplotlib
+import matplotlib.pyplot as plt
+import operator
+import functools
+
+from MODEL_DATA import ASSET_SECTOR
 
 class DataProvider:
 
@@ -46,35 +53,10 @@ def cleanData(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def projectData():
-    dp = DataProvider(dt.datetime(1990, 1, 1), dt.datetime(2023, 10, 1))
+    dp = DataProvider(dt.datetime(2000, 1, 1), dt.datetime(2023, 11, 13))
 
-    df = dp.getTickersHistory([
-        #Equities
-        "ES=F", # E-Mini S&P 500
-        "YM=F", # Mini Dow Jones
-        "NQ=F", # Nasdaq 100
-        "MME=F", #MSCI Emerging Markets Index Fut
-        "RTY=F", #E-mini Russell 2000
-        #Commodities
-        "GC=F", #Gold
-        "SI=F", #Silver
-        "ZC=F", #Corn Futures
-        "CL=F", #Crude Oil
-        "SB=F", #Sugar
-        "CT=F", #Cotton
-        #Fixed Income
-        "ZB=F", #U.S. Treasury Bond Futures
-        "ZN=F", #10-Year Treasury Note
-        "ZF=F", # 5-year T-Note
-        "ZT=F", #2-year T-Note
-        #Currencies
-        "EUR=X",
-        "JPY=X",
-        "GBP=X",
-        "BRL=X",
-        "MXN=X",
-        "CAD=X"
-    ])
+    all_tickers = functools.reduce(operator.iconcat, ASSET_SECTOR.values(), [])
+    df = dp.getTickersHistory(all_tickers)
 
     df.set_index("Date", inplace=True)
 
@@ -83,7 +65,27 @@ def projectData():
 
 if __name__ == "__main__":
 
+    matplotlib.use("TkAgg")
+    sns.set_style("darkgrid")
     df = projectData()
 
-    df.to_csv("futurePrices.csv")
+    df.reset_index(inplace=True, names= "Date")
+    df_melt = pd.melt(df, id_vars=["Date"], var_name=["Ticker"], value_name="Close")
+
+    df_melt.dropna(inplace=True)
+
+    f, axes = plt.subplots(2,2)
+    f.tight_layout()
+    i = 0
+    for sector in ASSET_SECTOR:
+        subdf = df_melt[df_melt["Ticker"].isin(ASSET_SECTOR[sector])]
+        row = i//2
+        col = i %2
+        sns.lineplot(subdf, x = "Date", y = "Close", hue="Ticker", ax= axes[row,col]).set_title(sector)
+        i+=1
+
+    plt.show()
+
+
+
 
