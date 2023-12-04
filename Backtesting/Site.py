@@ -9,7 +9,7 @@ pd.options.plotting.backend = "plotly"
 # from pathlib import Path
 AVAILABLE_TICKERS = {
       "Renda Fixa": ['ZF=F', 'ZT=F', 'ZB=F', "ZN=F"],
-      "Equity": ["ES=F", "YM=F", "NQ=F"],
+      "Equity": ["ES=F", "YM=F", "NQ=F", "Average"],
       "Commodity": ["GC=F"],
       "Moedas": ["EUR=X", "JPY=X", "GBP=X", 'BRL=X', "MXN=X", "CAD=X"]
 }
@@ -43,13 +43,16 @@ def config():
     return ticker, classe
 
 def main(ticker, classe):
-            base_df = pd.read_csv(f'Backtesting/Results/{ticker}.csv').set_index('date')
+            if ticker == "Average":
+                base_df = pd.read_csv(f'Backtesting/Results/{ticker}{classe}.csv').set_index('date')
+            else:
+                base_df = pd.read_csv(f'Backtesting/Results/{ticker}.csv').set_index('date')
             base_df[f'{ticker} Long Only'] = base_df[f'{ticker} Long Only'].astype(float)
             base_df[f'{ticker} Using TFT'] = base_df[f'{ticker} Using TFT'].astype(float)
             
             graph_df = pd.DataFrame({'date': base_df.index, 'Modelo TFT': ((base_df[f'{ticker} Using TFT'].add(1).cumprod()).sub(1)).mul(100), "Long Only": ((base_df[f'{ticker} Long Only'].add(1).cumprod()).sub(1)).mul(100)}).set_index('date').dropna()
             graph_df.index = pd.to_datetime(graph_df.index)
-
+            
             macd = pd.read_csv("Backtesting/Results/macd.csv").set_index("Date").fillna(0)
             macd.index.rename("date", inplace=True)
             macd.index = pd.to_datetime(macd.index)
@@ -65,10 +68,14 @@ def main(ticker, classe):
             bayes.index = pd.to_datetime(bayes.index)
             bayes = bayes[list(graph_df.index)[0]:list(graph_df.index)[-1]]
 
-            graph_df["Moskowitz"] = ((moskowitz[ticker]).add(1).cumprod().sub(1)).mul(100)
-            # graph_df["Bayes"] = bayes[ticker]
-            # graph_df["Bayes"] = graph_df["Bayes"].fillna(0).add(1).cumprod().sub(1).mul(100)
-            graph_df["MACD"] = ((macd[ticker]).add(1).cumprod().sub(1)).mul(100)
+            if ticker == "Average":
+                graph_df["Moskowitz"] = ((moskowitz[ticker+classe]).add(1).cumprod().sub(1)).mul(100)
+                graph_df["MACD"] = ((macd[ticker+classe]).add(1).cumprod().sub(1)).mul(100)
+            else:
+                graph_df["Moskowitz"] = ((moskowitz[ticker]).add(1).cumprod().sub(1)).mul(100)
+                # graph_df["Bayes"] = bayes[ticker]
+                # graph_df["Bayes"] = graph_df["Bayes"].fillna(0).add(1).cumprod().sub(1).mul(100)
+                graph_df["MACD"] = ((macd[ticker]).add(1).cumprod().sub(1)).mul(100)
 
 
 
@@ -103,7 +110,7 @@ if __name__ == "__main__":
     )
     ticker, classe  = config()
     
-    st.header(ticker)
+    st.header(ticker + " - " + classe)
     fig, fig2, metrics, base_df = main(ticker, classe)
     st.plotly_chart(fig, use_container_width=True)
     st.subheader('Metrics')
