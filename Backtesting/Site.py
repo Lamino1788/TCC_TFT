@@ -63,7 +63,7 @@ def main(ticker, classe):
             moskowitz.index = pd.to_datetime(moskowitz.index)
             moskowitz = moskowitz[list(graph_df.index)[0]:list(graph_df.index)[-1]]
 
-            bayes = pd.read_csv("Backtesting/Results/bayes_results.csv", sep=";").set_index("Date").fillna(0)
+            bayes = pd.read_csv("Backtesting/Results/bayes_results.csv").set_index("Date").fillna(0)
             bayes.index.rename("date", inplace=True)
             bayes.index = pd.to_datetime(bayes.index)
             bayes = bayes[list(graph_df.index)[0]:list(graph_df.index)[-1]]
