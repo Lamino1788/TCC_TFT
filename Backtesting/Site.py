@@ -75,9 +75,9 @@ def main(ticker, classe):
                     graph_df["Bayes"] = bayes[ticker+classe].add(1).cumprod().sub(1).mul(100)
             else:
                 graph_df["Moskowitz"] = ((moskowitz[ticker]).add(1).cumprod().sub(1)).mul(100)
-                graph_df["Bayes"] = bayes[ticker].add(1).cumprod().sub(1).mul(100)
+                graph_df["MACD"] = ((macd[ticker]).add(1).cumprod().sub(1)).mul(100)
                 if classe == "Equity" or ticker == "GC=F":
-                    graph_df["MACD"] = ((macd[ticker]).add(1).cumprod().sub(1)).mul(100)
+                    graph_df["Bayes"] = bayes[ticker].add(1).cumprod().sub(1).mul(100)
 
             fig = px.line(graph_df, x=graph_df.index, y=graph_df.columns, labels={'value': 'Retorno Acumulado (%)', 'variable': 'Série', 'date': 'Data'}, )
 
