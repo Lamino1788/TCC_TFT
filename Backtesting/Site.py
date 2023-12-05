@@ -63,7 +63,7 @@ def main(ticker, classe):
             moskowitz.index = pd.to_datetime(moskowitz.index)
             moskowitz = moskowitz[list(graph_df.index)[0]:list(graph_df.index)[-1]]
 
-            bayes = pd.read_csv("Backtesting/Results/bayes_results.csv").set_index("Date").fillna(0)
+            bayes = pd.read_csv("Backtesting/Results/bayes_results.csv", sep=";").set_index("Date").fillna(0)
             bayes.index.rename("date", inplace=True)
             bayes.index = pd.to_datetime(bayes.index)
             bayes = bayes[list(graph_df.index)[0]:list(graph_df.index)[-1]]
@@ -71,13 +71,11 @@ def main(ticker, classe):
             if ticker == "Average":
                 graph_df["Moskowitz"] = ((moskowitz[ticker+classe]).add(1).cumprod().sub(1)).mul(100)
                 graph_df["MACD"] = ((macd[ticker+classe]).add(1).cumprod().sub(1)).mul(100)
+                graph_df["Bayes"] = bayes[ticker+classe].add(1).cumprod().sub(1).mul(100)
             else:
                 graph_df["Moskowitz"] = ((moskowitz[ticker]).add(1).cumprod().sub(1)).mul(100)
-                # graph_df["Bayes"] = bayes[ticker]
-                # graph_df["Bayes"] = graph_df["Bayes"].fillna(0).add(1).cumprod().sub(1).mul(100)
+                graph_df["Bayes"] = bayes[ticker].add(1).cumprod().sub(1).mul(100)
                 graph_df["MACD"] = ((macd[ticker]).add(1).cumprod().sub(1)).mul(100)
-
-
 
             fig = px.line(graph_df, x=graph_df.index, y=graph_df.columns, labels={'value': 'Retorno Acumulado (%)', 'variable': 'Série', 'date': 'Data'}, )
 
