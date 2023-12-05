@@ -71,11 +71,13 @@ def main(ticker, classe):
             if ticker == "Average":
                 graph_df["Moskowitz"] = ((moskowitz[ticker+classe]).add(1).cumprod().sub(1)).mul(100)
                 graph_df["MACD"] = ((macd[ticker+classe]).add(1).cumprod().sub(1)).mul(100)
-                graph_df["Bayes"] = bayes[ticker+classe].add(1).cumprod().sub(1).mul(100)
+                if classe == "Equity":
+                    graph_df["Bayes"] = bayes[ticker+classe].add(1).cumprod().sub(1).mul(100)
             else:
                 graph_df["Moskowitz"] = ((moskowitz[ticker]).add(1).cumprod().sub(1)).mul(100)
                 graph_df["Bayes"] = bayes[ticker].add(1).cumprod().sub(1).mul(100)
-                graph_df["MACD"] = ((macd[ticker]).add(1).cumprod().sub(1)).mul(100)
+                if classe == "Equity" or ticker == "GC=F":
+                    graph_df["MACD"] = ((macd[ticker]).add(1).cumprod().sub(1)).mul(100)
 
             fig = px.line(graph_df, x=graph_df.index, y=graph_df.columns, labels={'value': 'Retorno Acumulado (%)', 'variable': 'Série', 'date': 'Data'}, )
 
@@ -113,8 +115,5 @@ if __name__ == "__main__":
     st.plotly_chart(fig, use_container_width=True)
     st.subheader('Metrics')
     display_metrics(fig2, metrics, ticker)
-    # base_df.set_index('date', inplace=True)
-    # base_df = base_df.rename(columns={f'{ticker}': 'tmp'})
-    # base_df = base_df.rename(columns={'Rfinal': f'{ticker}'})
     st.download_button('Download Series CSV', base_df.to_csv(), file_name=f'{ticker}.csv', mime='text/csv')
     
