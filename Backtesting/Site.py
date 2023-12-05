@@ -109,11 +109,65 @@ if __name__ == "__main__":
         layout="wide",
     )
     ticker, classe  = config()
+    tab1, tab2, tab3 = st.tabs(["Introdução", "Resultados", "Equipe"])
+
+    with tab1:
+        st.header("Análise de Séries Temporais Financeiras e Trend Following Utilizando o Modelo Temporal Fusion Transformer")
+        col1, col2 = st.columns(2, gap="large")
+        with col1:
+            st.header("O que é Trend Following?")
+            st.write("Trend Following é um tipo de estratégia de investimentos, a qual baseia-se em definir o tamanho da posição de investimento em um determinado ativo, a partir da identificação de tendências na sua série temporal de preços.")
+            st.write("")
+            st.header("Por que usar o Temporal Fusion Transformer?")
+            st.write("Classicamente, as estratégias de Trend Following depedem de parâmetros subjetivos. Assim, é interessante analisar a viabilidade de abordagens mais orientadas à dados. \n Desta forma, o Temporal Fusion Transformer (TFT) surge como uma alternativa ao problema. Pois, sua arquitetura é voltada para análise de séries temporais e interpretabilidade – essencial no contexto de alocação de patrimônio.")
+
+        with col2:
+            st.header("Atributos do Modelo")
+            st.write("A partir da séries de preços de fechamento dos ativos, indicadores de Trend Following foram incorporados aos atributos modelo, que são: \
+                \n - Mês \n - Dia do mês \n - Retorno atrasado correspondente ao tamanho do encoder \n - Retorno atrasado correspondente ao tamanho da previsão \n \
+                - Média móvel de 22 dias do retorno \n - Média móvel da volatilidade \n - Média móvel exponencial do retorno \n \
+                - Índice de força relativa (7, 14, 22, 30 e 60 dias) \n - Convergência Divergência de médias móveis")
+
+        
+        # with col2:
+        st.header("Desenvolvimento da Estratégia")
+        st.write("Extraímos o preço de fechamento de contratos futuros da API do Yahoo Finance. \
+            Geramos indicadores deTrend Following a partir da séries de preços e combinamos todos esses dados como entradas do TFT. \
+            \n A partir das entradas, o TFT prevê os próximos preços de fechamento dos contratos. Com o preço previsto, épossível estimar o retorno esperado. \
+            \n A estratégia então consiste em comprar o ativo caso o retorno esperado seja positivo, e vender caso contrário.")
+        st.image("Backtesting/Images/Arquitetura.png",  width= 1000, caption="Arquitetura do Modelo")
+
+        st.header("Resultados")
+        st.write("Usando uma carteira igualmente balanceada de futuros de ETFs. A estratégia desenvolvida supera outras estratégias de Trend Following nas pricipais métricas de desempenho.")
+        st.image("Backtesting/Images/Tabela.png", width=1000, caption="Resultados por Modelo")
+
+    with tab2:
+        try:
+            st.header(ticker + " - " + classe)
+            fig, fig2, metrics, base_df = main(ticker, classe)
+            st.plotly_chart(fig, use_container_width=True)
+            st.subheader('Metrics')
+            display_metrics(fig2, metrics, ticker)
+            st.download_button('Download Series CSV', base_df.to_csv(), file_name=f'{ticker}.csv', mime='text/csv')
+        except:
+            pass
     
-    st.header(ticker + " - " + classe)
-    fig, fig2, metrics, base_df = main(ticker, classe)
-    st.plotly_chart(fig, use_container_width=True)
-    st.subheader('Metrics')
-    display_metrics(fig2, metrics, ticker)
-    st.download_button('Download Series CSV', base_df.to_csv(), file_name=f'{ticker}.csv', mime='text/csv')
+    with tab3:
+        col1, col2 = st.columns(2, gap="small")
+
+        with col1:
+            st.header("Alunos: ")
+            st.write(" - Luiz Felipe Alamino de Lima \n - Rhenan Silva Nehlsen")
+
+            st.header("Orientador: ")
+            st.write(" - Prof. Dr. Edson Satoshi Gomi")
+            
+            st.header("Co-Orientador: ")
+            st.write(" - Fábio Katsumi Shinohara de Souza")
+        with col2:
+            st.header("Universidade: ")
+            st.write(" - Escola Politécnica da Universidade de São Paulo")
+
+            st.header("Links: ")
+            st.write(" - Banner: \n - Press Release: \n - Monografia:")
     
