@@ -8,10 +8,10 @@ pd.options.plotting.backend = "plotly"
 
 # from pathlib import Path
 AVAILABLE_TICKERS = {
-      "Renda Fixa": ['ZF=F', 'ZT=F', 'ZB=F', "ZN=F", "Average"],
-      "Equity": ["ES=F", "YM=F", "NQ=F", "Average"],
+      "Renda Fixa": ["Carteira", 'ZF=F', 'ZT=F', 'ZB=F', "ZN=F"],
+      "Equity": ["Carteira", "ES=F", "YM=F", "NQ=F"],
       "Commodity": ["GC=F"],
-      "Moeda": ["EUR=X", "JPY=X", "GBP=X", 'BRL=X', "MXN=X", "CAD=X", "Average"]
+      "Moeda": ["Carteira", "EUR=X", "JPY=X", "GBP=X", 'BRL=X', "MXN=X", "CAD=X"]
 }
 
 AVAILABLE_CLASS = [
@@ -45,7 +45,7 @@ def config():
     return ticker, classe
 
 def main(ticker, classe):
-            if ticker == "Average":
+            if ticker == "Carteira":
                 base_df = pd.read_csv(f'Backtesting/Results/{ticker}{classe}.csv').set_index('date')
             else:
                 base_df = pd.read_csv(f'Backtesting/Results/{ticker}.csv').set_index('date')
@@ -70,7 +70,7 @@ def main(ticker, classe):
             bayes.index = pd.to_datetime(bayes.index)
             bayes = bayes[list(graph_df.index)[0]:list(graph_df.index)[-1]]
 
-            if ticker == "Average":
+            if ticker == "Carteira":
                 graph_df["Moskowitz"] = ((moskowitz[ticker+classe]).add(1).cumprod().sub(1)).mul(100)
                 graph_df["MACD"] = ((macd[ticker+classe]).add(1).cumprod().sub(1)).mul(100)
                 if classe == "Equity":
@@ -107,10 +107,9 @@ if __name__ == "__main__":
     st.set_page_config(
         "Trend Following com o TFT - TCC",
         "📊",
-        initial_sidebar_state="expanded",
+        initial_sidebar_state="collapsed",
         layout="wide",
     )
-    ticker, classe  = config()
     tab1, tab2, tab3 = st.tabs(["Introdução", "Resultados", "Equipe"])
 
     with tab1:
@@ -131,7 +130,6 @@ if __name__ == "__main__":
                 - Índice de força relativa (7, 14, 22, 30 e 60 dias) \n - Convergência Divergência de médias móveis")
 
         
-        # with col2:
         st.header("Desenvolvimento da Estratégia")
         st.write("Extraímos o preço de fechamento de contratos futuros da API do Yahoo Finance. \
             Geramos indicadores deTrend Following a partir da séries de preços e combinamos todos esses dados como entradas do TFT. \
@@ -144,6 +142,7 @@ if __name__ == "__main__":
         st.image("Backtesting/Images/Tabela.png", width=1000, caption="Resultados por Modelo")
 
     with tab2:
+        ticker, classe  = config()
         try:
             st.header(ticker + " - " + classe)
             fig, fig2, metrics, base_df = main(ticker, classe)

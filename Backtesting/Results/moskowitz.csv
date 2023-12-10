@@ -1,4 +1,4 @@
-,Date,BRL=X,CAD=X,CL=F,CT=F,ES=F,EUR=X,GBP=X,GC=F,JPY=X,MXN=X,NQ=F,SB=F,SI=F,YM=F,ZB=F,ZC=F,ZF=F,ZN=F,ZT=F,AverageRenda_Fixa,AverageMoeda,AverageEquity
+,Date,BRL=X,CAD=X,CL=F,CT=F,ES=F,EUR=X,GBP=X,GC=F,JPY=X,MXN=X,NQ=F,SB=F,SI=F,YM=F,ZB=F,ZC=F,ZF=F,ZN=F,ZT=F,CarteiraRenda_Fixa,CarteiraMoeda,CarteiraEquity
 0,2000-01-03,,,,,,,,,,,,,,,,,,,,,,
 1,2000-01-04,,,,,,,,,,,,,,,,,,,,,,
 2,2000-01-05,,,,,,,,,,,,,,,,,,,,,,
