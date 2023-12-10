@@ -58,12 +58,12 @@ def main(ticker, classe):
             macd = pd.read_csv("Backtesting/Results/macd.csv").set_index("Date").fillna(0)
             macd.index.rename("date", inplace=True)
             macd.index = pd.to_datetime(macd.index)
-            macd = macd[list(graph_df.index)[0]:list(graph_df.index)[-1]]
+            macd = macd.loc[graph_df.index]
 
             moskowitz = pd.read_csv("Backtesting/Results/moskowitz.csv").set_index("Date").fillna(0)
             moskowitz.index.rename("date", inplace=True)
             moskowitz.index = pd.to_datetime(moskowitz.index)
-            moskowitz = moskowitz[list(graph_df.index)[0]:list(graph_df.index)[-1]]
+            moskowitz = moskowitz.loc[graph_df.index]
 
             bayes = pd.read_csv("Backtesting/Results/bayes_results.csv").set_index("Date").fillna(0)
             bayes.index.rename("date", inplace=True)
