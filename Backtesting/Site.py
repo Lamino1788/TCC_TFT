@@ -107,7 +107,7 @@ if __name__ == "__main__":
     st.set_page_config(
         "Trend Following com o TFT - TCC",
         "📊",
-        initial_sidebar_state="collapsed",
+        initial_sidebar_state="auto",
         layout="wide",
     )
     tab1, tab2, tab3 = st.tabs(["Introdução", "Resultados", "Equipe"])
