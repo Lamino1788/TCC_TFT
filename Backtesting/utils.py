@@ -87,7 +87,10 @@ def display_metrics(fig2, metrics, bench):
     tmp.plotly_chart(fig2)
     metrics1.metric("Retorno Acumulado", f"{round(metrics['total_return']*100,2)} %")
     metrics1.write("")
-    metrics3.metric(f"Retorno Anual Comparado a Long Only", f"{bench} + {round(100*metrics['above'],2)}%")
+    if round(100*metrics['above'],2) > 0:
+        metrics3.metric(f"Retorno Anual Comparado a Long Only", f"{bench} + {round(100*metrics['above'],2)}%")
+    else:
+        metrics3.metric(f"Retorno Anual Comparado a Long Only", f"{bench} {round(100*metrics['above'],2)}%")
     metrics3.write("")
     metrics2.metric(f"Porcentagem do Retorno Long Only", f"{round(metrics['more']*100,2)} %")
     metrics2.write("")
