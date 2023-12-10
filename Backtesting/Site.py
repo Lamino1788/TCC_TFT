@@ -11,14 +11,14 @@ AVAILABLE_TICKERS = {
       "Renda Fixa": ['ZF=F', 'ZT=F', 'ZB=F', "ZN=F", "Average"],
       "Equity": ["ES=F", "YM=F", "NQ=F", "Average"],
       "Commodity": ["GC=F"],
-      "Moedas": ["EUR=X", "JPY=X", "GBP=X", 'BRL=X', "MXN=X", "CAD=X", "Average"]
+      "Moeda": ["EUR=X", "JPY=X", "GBP=X", 'BRL=X', "MXN=X", "CAD=X", "Average"]
 }
 
 AVAILABLE_CLASS = [
     "Equity",
     "Renda Fixa",
     "Commodity",
-    "Moedas"
+    "Moeda"
 ]
 
 # Configuracoes do Streamlit
