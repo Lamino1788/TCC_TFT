@@ -8,10 +8,10 @@ pd.options.plotting.backend = "plotly"
 
 # from pathlib import Path
 AVAILABLE_TICKERS = {
-      "Renda Fixa": ['ZF=F', 'ZT=F', 'ZB=F', "ZN=F"],
+      "Renda Fixa": ['ZF=F', 'ZT=F', 'ZB=F', "ZN=F", "Average"],
       "Equity": ["ES=F", "YM=F", "NQ=F", "Average"],
       "Commodity": ["GC=F"],
-      "Moedas": ["EUR=X", "JPY=X", "GBP=X", 'BRL=X', "MXN=X", "CAD=X"]
+      "Moedas": ["EUR=X", "JPY=X", "GBP=X", 'BRL=X', "MXN=X", "CAD=X", "Average"]
 }
 
 AVAILABLE_CLASS = [
@@ -39,6 +39,8 @@ def config():
         key = 'ticker',
         options = AVAILABLE_TICKERS[classe]
         )
+        if classe == "Renda Fixa":
+            classe = "Renda_Fixa"
 
     return ticker, classe
 
