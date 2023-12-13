@@ -53,10 +53,12 @@ def cleanData(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def projectData():
+
     dp = DataProvider(dt.datetime(2000, 1, 1), dt.datetime(2023, 11, 13))
 
     all_tickers = functools.reduce(operator.iconcat, ASSET_SECTOR.values(), [])
     df = dp.getTickersHistory(all_tickers)
+
 
     df.set_index("Date", inplace=True)
 
@@ -85,7 +87,3 @@ if __name__ == "__main__":
         i+=1
 
     plt.show()
-
-
-
-
