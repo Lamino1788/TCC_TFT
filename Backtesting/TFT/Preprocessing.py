@@ -42,6 +42,7 @@ def make_Complete_Data(prices: pd.DataFrame, main_ticker: str, other_tickers: Li
     rename_dict[main_ticker] = "Close"
     Complete_Data = prices.rename(columns=rename_dict)
 
+    Complete_Data[f"Close_{main_ticker}"] = Complete_Data["Close"]
 
     Complete_Data = np.log(Complete_Data / Complete_Data.shift(1))
     Complete_Data['Close_prediction'] = Complete_Data['Close'].shift(max_prediction_length).fillna(0)
