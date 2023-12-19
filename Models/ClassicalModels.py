@@ -2,13 +2,13 @@ import pandas as pd
 import numpy as np
 from functools import cache
 from typing import List
-from DataProvider import projectData
-from MODEL_DATA import ASSET_SECTOR
+from Models.DataProvider import projectData
+from Models.MODEL_DATA import ASSET_SECTOR
 
 class Moskowitz:
 
     def __init__(self, prices: pd.DataFrame, vol_target: float = 0.15, vol_lookback: int = 60,
-                 fi_vol_target: int = 0.05, fi_tickers : List[str] = []):
+                 fi_vol_target: float = 0.05, fi_tickers : List[str] = []):
         self.vol_target = vol_target
         self.vol_lookback = vol_lookback
         self.prices = prices

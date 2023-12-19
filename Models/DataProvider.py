@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import operator
 import functools
 
-from MODEL_DATA import ASSET_SECTOR
+from Models.MODEL_DATA import ASSET_SECTOR
 
 class DataProvider:
 
