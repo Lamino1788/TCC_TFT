@@ -170,7 +170,5 @@ if __name__ == "__main__":
             st.write(" - Escola Politécnica da Universidade de São Paulo")
 
             st.header("Links: ")
-            st.write(" - Banner: https://pcs.usp.br/pcspf/wp-content/uploads/sites/8/2023/12/Banner_PCS3560_SEM_2023_Grupo_S07.pdf \n \
-            - Press Release: https://pcs.usp.br/pcspf/wp-content/uploads/sites/8/2023/12/Press_Release_PCS3560_SEM_2023_Grupo_S07.pdf\n \
-            - Monografia: https://pcs.usp.br/pcspf/wp-content/uploads/sites/8/2023/12/Monografia_PCS3560_SEM_2023_Grupo_S07.pdf")
+            st.write(" - Banner: https://pcs.usp.br/pcspf/wp-content/uploads/sites/8/2023/12/Banner_PCS3560_SEM_2023_Grupo_S07.pdf \n - Press Release: https://pcs.usp.br/pcspf/wp-content/uploads/sites/8/2023/12/Press_Release_PCS3560_SEM_2023_Grupo_S07.pdf \n - Monografia: https://pcs.usp.br/pcspf/wp-content/uploads/sites/8/2023/12/Monografia_PCS3560_SEM_2023_Grupo_S07.pdf")
     
